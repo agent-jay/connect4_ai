@@ -1,20 +1,6 @@
-def bound_x(val):
-    if val<0:
-        return 0
-    if val>6:
-        return 6
-    return val
-
-def bound_y(val):
-    if val<0:
-        return 0
-    if val>5:
-        return 5
-    return val
-
 class Board:
     def __init__(self):
-        self.state= [[0]*7]*6 #state[y][x]
+        self.state= [[0 for y in range(7)] for x in range(6)]
         self.move_hist= []
         self.last_player= 2
 
@@ -33,7 +19,7 @@ class Board:
 
     def unmake_last_move(self):
         y,x=self.move_hist.pop()
-        self.state[y,x]=0
+        self.state[y][x]=0
         self.last_player= -self.last_player+3
 
     def last_move_won(self):
@@ -42,8 +28,7 @@ class Board:
         last_y,last_x=self.move_hist[-1]
 
         #horiz
-        x=last_x-3
-        if x<0:x=0
+        x=max(0,last_x-3)
 
         while(x+3<7 and x<=last_x):
             if len(set(self.state[last_y][x:x+4]))==1:
@@ -72,14 +57,14 @@ class Board:
         x=last_x+3
         y=last_y+3
         while x>6 or y>5:
-            x+=1
-            y+=1
+            x-=1
+            y-=1
         while x-3>0 and y-3>0:
             slc=[self.state[y-i][x-i] for i in range(0,4)]
             if len(set(slc))==1:
                 return True
-            x+=1
-            y+=1
+            x-=1
+            y-=1
 
 
             
