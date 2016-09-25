@@ -4,6 +4,9 @@ class Board:
         self.move_hist= []
         self.last_player= 2
 
+    def depth(self):
+        return len(self.move_hist)
+
     def generate_moves(self):
         #checks if top row of a column is empty and returns if so
         return [i for i,val in enumerate(self.state[0]) if val==0]
@@ -32,12 +35,14 @@ class Board:
 
         while(x+3<7 and x<=last_x):
             if len(set(self.state[last_y][x:x+4]))==1:
+                self.diagnostic("horiz")
                 return True
             x+=1
         #vert
-        if last_y<4:
-            slc=[row[last_x] for row in self.state[last_y:last_y+3]]
+        if last_y<=2:
+            slc=[row[last_x] for row in self.state[last_y:last_y+5]]
             if len(set(slc))==1:
+                # self.diagnostic("vert"+str(slc))
                 return True
                     
         #left diagonal
@@ -46,28 +51,49 @@ class Board:
         while x<0 or y<0:
             x+=1
             y+=1
-        while x+3<7 and y+3<6:
+        while x+3<7 and y+3<6 and x<=last_x and y<=last_y:
             slc=[self.state[y+i][x+i] for i in range(0,4)]
+            # print(self)
+            # print([(y+i,x+i) for i in range(0,4)])
             if len(set(slc))==1:
+                # self.diagonostic("left diag")
                 return True
             x+=1
             y+=1
         
-        #right diagonal
+        #right diagonal. 
         x=last_x+3
-        y=last_y+3
-        while x>6 or y>5:
+        y=last_y-3
+        while x>6 or y<0:
             x-=1
-            y-=1
-        while x-3>0 and y-3>0:
-            slc=[self.state[y-i][x-i] for i in range(0,4)]
+            y+=1
+        # print(y,x)
+        while x-3>=0 and y+3<6 and x>=last_x and y<=last_y:
+            slc=[self.state[y+i][x-i] for i in range(0,4)]
+            # print([(y+i,x-i) for i in range(0,4)])
             if len(set(slc))==1:
+                # self.diagnostic("right diag")
                 return True
             x-=1
-            y-=1
+            y+=1
+    
+    def diagnostic(self,msg=""):
+        print(msg)
+        print(self)
+        print(self.move_hist)
 
-
+    def test(self):
+        self.state=[[0,0,0,0,0,0,0],
+                    [0,0,0,0,0,0,0],
+                    [0,0,0,0,0,0,1],
+                    [0,0,0,0,0,0,1],
+                    [0,0,0,0,0,0,1],
+                    [0,0,0,0,0,0,1]]
+        self.move_hist.append((2,6))
+        print(self.last_move_won())
             
     def __str__(self):
-        return str(self.state).replace('], [', ']\n[')
+        return '\n'+str(self.state).replace('], [', ']\n[')
 
+# b=Board()
+# b.test()
