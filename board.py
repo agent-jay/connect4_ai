@@ -35,7 +35,7 @@ class Board:
 
         while(x+3<7 and x<=last_x):
             if len(set(self.state[last_y][x:x+4]))==1:
-                self.diagnostic("horiz")
+                # self.diagnostic("horiz")
                 return True
             x+=1
         #vert
