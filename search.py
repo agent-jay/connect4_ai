@@ -1,22 +1,20 @@
 import board
 import random
 import logging
+from copy import deepcopy
 
-def diag_dump(board,fringe,current_depth):
-    print("\n____DIAGNOSTIC____")
-    board.diagnostic()
-    print(fringe)
-    print(current_depth)
-    
+log_level=logging.INFO
 
 def perft(board, depth):
+    board_bk=deepcopy(board)
     # Set up logging
-    logging.basicConfig(filename='search.log',filemode='w',level=logging.ERROR)
+    logging.basicConfig(filename='perft.log',filemode='w',level=log_level)
     logging.debug('STARTING SEARCH')
 
     fringe=[] #fringe elements (move,depth before move is made)
     depthn_nodes=0
     nodes_visited=0
+    init_boarddepth=board.depth()
     # explored={} 
     
     fringe.extend([(move,0) for move in board.generate_moves()])
@@ -27,24 +25,23 @@ def perft(board, depth):
         logging.debug("FRINGE:"+str(fringe))
         logging.debug("DEPTH "+str(depth)+" Leaf Nodes:"+ str(depthn_nodes))
         logging.debug("Nodes visited:"+str(nodes_visited))
-        if nodes_visited%1000==0:
+        if nodes_visited%10000==0:
             print(nodes_visited, depthn_nodes)
 
         move,move_depth=fringe.pop()
-        while board.depth()>move_depth:
+        while board.depth()-init_boarddepth>move_depth:
             board.unmake_last_move()
 
         board.make_move(move)
-        current_depth=board.depth()
+        current_depth=board.depth()-init_boarddepth
 
         if current_depth==depth:
-            # print("HERE1")
             depthn_nodes+=1
             nodes_visited+=1
             continue
         elif board.last_move_won()==True:
-            diag_dump(board,fringe,current_depth)
-            quit(1)
+            logging.debug("This move wins!!!")
+            depthn_nodes+=1
             nodes_visited+=1
             continue
         else:
@@ -53,12 +50,9 @@ def perft(board, depth):
             fringe.extend([(move,current_depth) for move in board.generate_moves()])
 
     print("Number of leaf nodes at ",depth," :",depthn_nodes)
+    board=board_bk
     return depthn_nodes
               
-#b=board.Board()
-#perft(b, 5) 
-        
-    
 
 def find_win(board, depth):
   pass
