@@ -34,15 +34,14 @@ class Board:
         x=max(0,last_x-3)
 
         while(x+3<7 and x<=last_x):
-            if len(set(self.state[last_y][x:x+4]))==1:
-                # self.diagnostic("horiz")
+            slc=self.state[last_y][x:x+4]
+            if len(set(slc))==1 and self.last_player in slc:
                 return True
             x+=1
         #vert
         if last_y<=2:
-            slc=[row[last_x] for row in self.state[last_y:last_y+5]]
-            if len(set(slc))==1:
-                # self.diagnostic("vert"+str(slc))
+            slc=[row[last_x] for row in self.state[last_y:last_y+4]]
+            if len(set(slc))==1 and self.last_player in slc:
                 return True
                     
         #left diagonal
@@ -53,10 +52,7 @@ class Board:
             y+=1
         while x+3<7 and y+3<6 and x<=last_x and y<=last_y:
             slc=[self.state[y+i][x+i] for i in range(0,4)]
-            # print(self)
-            # print([(y+i,x+i) for i in range(0,4)])
-            if len(set(slc))==1:
-                # self.diagonostic("left diag")
+            if len(set(slc))==1 and self.last_player in slc:
                 return True
             x+=1
             y+=1
@@ -67,12 +63,9 @@ class Board:
         while x>6 or y<0:
             x-=1
             y+=1
-        # print(y,x)
         while x-3>=0 and y+3<6 and x>=last_x and y<=last_y:
             slc=[self.state[y+i][x-i] for i in range(0,4)]
-            # print([(y+i,x-i) for i in range(0,4)])
-            if len(set(slc))==1:
-                # self.diagnostic("right diag")
+            if len(set(slc))==1 and self.last_player in slc:
                 return True
             x-=1
             y+=1
@@ -82,18 +75,6 @@ class Board:
         print(self)
         print(self.move_hist)
 
-    def test(self):
-        self.state=[[0,0,0,0,0,0,0],
-                    [0,0,0,0,0,0,0],
-                    [0,0,0,0,0,0,1],
-                    [0,0,0,0,0,0,1],
-                    [0,0,0,0,0,0,1],
-                    [0,0,0,0,0,0,1]]
-        self.move_hist.append((2,6))
-        print(self.last_move_won())
-            
     def __str__(self):
         return '\n'+str(self.state).replace('], [', ']\n[')
 
-# b=Board()
-# b.test()
