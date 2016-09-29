@@ -30,20 +30,20 @@ class Player:
 
 
     def get_move(self):
-        # start=time.clock()
-        depth=5
+        depth=8
         values=[]
         for move in self.b.generate_moves():
             self.b.make_move(move)
-            # uncomment to use alpha beta
-            # values.append((self.alpha_beta_minimax(depth-1,-inf,
-                # inf,maxplayer=False), move))
-            values.append((self.minimax(depth-1,maxplayer=False),move))
+            values.append((self.alpha_beta_minimax(depth-1,-inf,
+                inf,maxplayer=False), move))
+            # values.append((self.minimax(depth-1,maxplayer=False),move))
             self.b.unmake_last_move()
-        # print(values)
-        minimax_value=max(values)
-        # print(time.clock()-start)
-        return minimax_value[1]
+        minimax_val,best_mv=max(values)
+        for value in values:
+            if value[0]==minimax_val:
+                if (value[1]-3)**2<(best_mv-3)**2:
+                    best_mv=value[1]
+        return best_mv
 
     def evaluation(self,maxplayer):
         y,x=self.b.move_hist[-1]
