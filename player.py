@@ -1,14 +1,107 @@
+import time
 import random
+import board
+
+inf=1000
 
 class Player:
-  def __init__(self):
-    pass
+    def __init__(self):
+        self.b=board.Board()
+        self.eval_table=[[3,4,5,7,5,4,3],
+                         [4,6,8,10,8,6,4],
+                         [5,8,11,13,11,8,5],
+                         [5,8,11,13,11,8,5],
+                         [4,6,8,10,8,6,4],
+                         [3,4,5,7,5,4,3]]
 
-  def name(self):
-    return 'YOUR_PROGRAMS_NAME'
+    def name(self):
+        return 'agentjay_mk1'
 
-  def make_move(self, move):
-    pass
+    def make_move(self, move):
+        self.b.make_move(move)
 
-  def get_move(self):
-    pass
+
+    def move_order(self,moves):
+        # prefer center moves to end moves. Use when pruning
+        # sortord=[(3-i)**2 for i in moves] 
+        # return sorted(range(len(sortord)), key= lambda i:sortord[i])
+        #default
+        return moves
+
+
+    def get_move(self):
+        # start=time.clock()
+        depth=5
+        values=[]
+        for move in self.b.generate_moves():
+            self.b.make_move(move)
+            # uncomment to use alpha beta
+            # values.append((self.alpha_beta_minimax(depth-1,-inf,
+                # inf,maxplayer=False), move))
+            values.append((self.minimax(depth-1,maxplayer=False),move))
+            self.b.unmake_last_move()
+        # print(values)
+        minimax_value=max(values)
+        # print(time.clock()-start)
+        return minimax_value[1]
+
+    def evaluation(self,maxplayer):
+        y,x=self.b.move_hist[-1]
+        if maxplayer: 
+            return -self.eval_table[y][x]
+        else:
+            return +self.eval_table[y][x]
+
+    def minimax(self,depth, maxplayer):
+        if self.b.last_move_won():
+            if maxplayer:
+                return -100
+            else :
+                return +100
+        
+        if depth==0 or self.b.is_full():
+            return self.evaluation(maxplayer)           
+            #Default evaluation is 0
+            # return 0 
+
+        values=[]
+        for move in self.b.generate_moves():
+            self.b.make_move(move)
+            values.append(self.minimax(depth-1, not maxplayer))
+            self.b.unmake_last_move()
+        #If maximizing player
+        if maxplayer:
+            return max(values)
+        #if minimizing player
+        else:
+            return min(values)
+
+
+    def alpha_beta_minimax(self,depth, alpha, beta, maxplayer):
+        if self.b.last_move_won():
+            if maxplayer:
+                return -100
+            else :
+                return +100
+        if self.b.is_full():
+            return 0
+        if depth==0: 
+            return self.evaluation(maxplayer) #evaluation of board
+        
+        for move in self.move_order(self.b.generate_moves()):
+            self.b.make_move(move)
+            v= self.alpha_beta_minimax(depth-1, alpha,beta, not maxplayer) 
+            self.b.unmake_last_move()
+            if maxplayer and v>=beta:
+                return beta
+            if maxplayer and v>alpha:
+                alpha=v
+            if (not maxplayer) and v<=alpha:
+                return alpha
+            if (not maxplayer) and v<beta:
+                beta=v
+        if maxplayer:
+            return alpha
+        else:
+            return beta
+
