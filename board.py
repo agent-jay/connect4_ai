@@ -9,34 +9,26 @@ class Board:
         return len(self.move_hist)
 
     def generate_moves(self):
-        #checks if top row of a column is empty and returns if so
+        #checks if top row of a column(ie. head>0) is empty and returns if so
         return [i for i,val in enumerate(self.head) if val>0]
+        # alt method
         # return [i for i,val in enumerate(self.state[0]) if val==0]
    
     def is_full(self):
         if sum(self.head)==0:
             return True
         return False
-        # if 0 in self.state[0]:
-            # return False
-        # return True
 
     def make_move(self, move):
-        #checks the move'th column from the bottom for the first empty position
-        #Improvement- store topmost column
+        #Head-store position of topmost piece on each column. Fast vertical checks
         self.head[move]-=1
         self.move_hist.append((self.head[move],move))
         self.state[self.head[move]][move]= -self.last_player+3
         self.last_player=-self.last_player+3
         
-        # for y in range(5,-1,-1):
-            # if self.state[y][move]==0:
-                # self.move_hist.append((y,move))
-                # self.state[y][move]=-self.last_player+3 #switches between 2 and 1
-                # self.last_player=-self.last_player+3
-                # break
-
     def unmake_last_move(self):
+        if len(self.move_hist)==0:
+            return
         y,x=self.move_hist.pop()
         self.state[y][x]=0
         self.head[x]+=1
