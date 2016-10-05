@@ -1,7 +1,7 @@
 import board
 import player
 import player2
-import altplayer
+import Altplayer
 import random_player
 import search
 import random
@@ -102,6 +102,39 @@ def test_Q4():
         print("DRAW")
         return "DRAW"
 
+def test_Q5():
+    #for rigged games
+    players = [player.Player(),player2.Player()]
+    altplayer= Altplayer.Player()
+    print(players[0].name() + " vs " + players[1].name())
+
+    b = board.Board()
+    moves_list=[1,3,2,3,3,4,3,4,3]
+    map(b.make_move, moves_list)
+    map(players[0].make_move,moves_list) 
+    map(players[1].make_move,moves_list) 
+    map(altplayer.make_move,moves_list)
+    print(b)
+    i = 0
+    legal_moves = b.generate_moves()
+    while not b.last_move_won() and len(legal_moves) > 0:
+        move = players[i].get_move()
+        print(players[i].name()+"'s turn to move. Played "+str(move))
+        print("Altplayer would have played "+str(altplayer.get_move()))
+        players[0].make_move(move)
+        players[1].make_move(move)
+        altplayer.make_move(move)
+        b.make_move(move)
+        print(b)
+        i^=1
+        legal_moves = b.generate_moves()
+    if b.last_move_won():
+        winner= players[i^1].name()
+        print("VICTORY FOR PLAYER " + winner)
+        return winner
+    else:
+        print("DRAW")
+        return "DRAW"
 
 # test_Q1()
 # test_Q2()
