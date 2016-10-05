@@ -13,6 +13,7 @@ class Player:
                          [5,8,11,13,11,8,5],
                          [4,6,8,10,8,6,4],
                          [3,4,5,7,5,4,3]]
+        self.move_pref= {0:3, 1:2, 2:1, 3:0, 4:1, 5:2, 6:3}
 
     def name(self):
         return 'agentjay_mk1'
@@ -23,15 +24,15 @@ class Player:
 
     def move_order(self,moves):
         # prefer center moves to end moves. Use when pruning
-        # sortord=[(3-i)**2 for i in moves] 
-        # return sorted(range(len(sortord)), key= lambda i:sortord[i])
+        return sorted(moves,key=lambda x:self.move_pref[x])
         #default
-        return moves
+        # return moves
 
 
     def get_move(self):
         depth=8
         values=[]
+        start= time.time()
         for move in self.b.generate_moves():
             self.b.make_move(move)
             values.append((self.alpha_beta_minimax(depth-1,-inf,
