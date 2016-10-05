@@ -14,9 +14,11 @@ class Player:
                          [4,6,8,10,8,6,4],
                          [3,4,5,7,5,4,3]]
         self.move_pref= {0:3, 1:2, 2:1, 3:0, 4:1, 5:2, 6:3}
+        self.timeout=3.2
+        self.start_time=None
 
     def name(self):
-        return 'agentjay_mk1'
+        return 'agentjay_mk2'
 
     def make_move(self, move):
         self.b.make_move(move)
@@ -28,21 +30,37 @@ class Player:
         #default
         # return moves
 
-
     def get_move(self):
-        depth=8
+        #Iterative deepening
+        self.start_time=time.time()
+        best_moves=[]
+        depth=1
+        while(depth<43):
+            best_move=self.get_move_at_depth(depth)
+            if best_move==None:
+                break
+            best_moves.append(best_move)
+            depth+=1
+        # print("MAX DEPTH:"+str(len(best_moves)))
+        return best_moves[-1]
+        
+
+    def get_move_at_depth(self,depth):
         values=[]
-        start= time.time()
         for move in self.b.generate_moves():
             self.b.make_move(move)
-            values.append((self.alpha_beta_minimax(depth-1,-inf,
-                inf,maxplayer=False), move))
+            value=(self.alpha_beta_minimax(depth-1,-inf,
+                inf,maxplayer=False), move)
             # values.append((self.minimax(depth-1,maxplayer=False),move))
             self.b.unmake_last_move()
+            if value[0]==None:
+                return
+            values.append(value)
+        print(values)
         minimax_val,best_mv=max(values)
         for value in values:
             if value[0]==minimax_val:
-                if (value[1]-3)**2<(best_mv-3)**2:
+                if self.move_pref[value[1]]<self.move_pref[best_mv]:
                     best_mv=value[1]
         return best_mv
 
@@ -79,6 +97,8 @@ class Player:
 
 
     def alpha_beta_minimax(self,depth, alpha, beta, maxplayer):
+        if time.time()-self.start_time>= self.timeout:
+            return None
         if self.b.last_move_won():
             if maxplayer:
                 return -100
