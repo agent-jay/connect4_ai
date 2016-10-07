@@ -113,6 +113,8 @@ class Player:
             self.b.make_move(move)
             v= self.alpha_beta_minimax(depth-1, alpha,beta, not maxplayer) 
             self.b.unmake_last_move()
+            if v==None:
+                return None
             if maxplayer and v>=beta:
                 return beta
             if maxplayer and v>alpha:
