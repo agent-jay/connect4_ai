@@ -2,9 +2,11 @@ import board
 import player
 import player2
 import Altplayer
+import manual
 import random_player
 import search
 import random
+import time
 
 def test_Q1():
     print("TESTING FOR Q1")
@@ -54,14 +56,29 @@ def test_Q1():
 def test_Q2():
     print("TESTING FOR Q2")
     b = board.Board()
-    assert(search.perft(b, 1) == 7)
-    assert(search.perft(b, 8) == 5686266)
+    ans=search.perft(b, 1)
+    print(ans)
+    assert(ans==7)
+    ans=search.perft(b, 8)
+    print(ans)
+    assert(ans == 5686266)
     b.make_move(0)
     b.make_move(2)
     b.make_move(0)
-    assert(search.perft(b, 8) == 5245276)
+    ans=search.perft(b,8) 
+    print(ans)
+    assert(ans == 5245276)
+    moves= [4, 3, 1, 2, 1, 4, 1, 4, 5, 6, 2, 2, 2, 0, 4, 1, 1, 0, 4, 6, 1, 0,
+            6, 5, 3, 5, 0, 3]   
+    perfts = [117649, 117648, 117431, 117430, 117213, 115461, 112707, 91787,
+            78679, 87247, 78383, 85599, 74934, 81279, 66097, 73244, 86238,
+            73351, 74531, 56724, 56152, 21664, 18546, 13302, 13459, 9263, 4670,
+            4548]   
+    b = board.Board()   
+    for x in range(len(moves)):     
+        assert(search.perft(b, 6) == perfts[x])
+        b.make_move(moves[x])   
     print("passed")
-    
 
 def test_Q3():
     print("TESTING FOR Q3")
@@ -136,10 +153,57 @@ def test_Q5():
         print("DRAW")
         return "DRAW"
 
+def manual_play():
+    start= input("Who starts. Input P(layer) or M(anual):").lower()
+    print(start)
+    players = [player.Player(),manual.Player()]
+    if start=='m':
+        players = [manual.Player(), player.Player()]
+    print(players[0].name() + " vs " + players[1].name())
+    b = board.Board()
+    i = 0
+    legal_moves = b.generate_moves()
+    while not b.last_move_won() and len(legal_moves) > 0:
+        move = players[i].get_move()
+        print(players[i].name()+"'s turn to move. Played "+str(move))
+        players[0].make_move(move)
+        players[1].make_move(move)
+        b.make_move(move)
+        print(b)
+        i^=1
+        legal_moves = b.generate_moves()
+    if b.last_move_won():
+        winner= players[i^1].name()
+        print("VICTORY FOR PLAYER " + winner)
+        return winner
+    else:
+        print("DRAW")
+        return "DRAW"
+
+def time_test():
+    p=player.Player()
+    moves=[3,3,3,3,3,3,2,4]
+    map(p.make_move,moves)
+    start_time= time.time()
+    p.get_move()
+    print("Time taken:%f"%(time.time()-start_time))
+    print("Nodes expanded:%d"%(p.b.total_moves))
+    print("Depth:%d"%p.prev_depth)
+    b=board.Board()
+    map(b.make_move, moves)
+    search.minimax(b, p.prev_depth, True)
+    print("Minimax nodes expanded:%d"%(b.total_moves))
+    
+
+
+
+
 # test_Q1()
 # test_Q2()
 # test_Q3()
 # test_Q4()
 # test_Q5()
-ret=[test_Q4() for i in range(10)]
-print(ret)
+# ret=[test_Q4() for i in range(10)]
+# print(ret)
+# manual_play()
+time_test()
