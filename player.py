@@ -14,7 +14,8 @@ class Player:
                          [4,6,8,10,8,6,4],
                          [3,4,5,7,5,4,3]]
         self.move_pref= {0:3, 1:2, 2:1, 3:0, 4:1, 5:2, 6:3}
-        self.timeout=3.2
+        self.timeout=3
+        self.prev_depth=0
         self.start_time=None
 
     def name(self):
@@ -33,6 +34,7 @@ class Player:
     def get_move(self):
         #Iterative deepening
         self.start_time=time.time()
+        self.b.total_moves=0
         best_moves=[]
         depth=1
         while(depth<43):
@@ -42,6 +44,7 @@ class Player:
             best_moves.append(best_move)
             depth+=1
         # print("MAX DEPTH:"+str(len(best_moves)))
+        self.prev_depth=depth-1
         return best_moves[-1]
         
 
@@ -104,10 +107,10 @@ class Player:
                 return -100
             else :
                 return +100
-        if self.b.is_full():
-            return 0
         if depth==0: 
             return self.evaluation(maxplayer) #evaluation of board
+        if self.b.is_full():
+            return 0
         
         for move in self.move_order(self.b.generate_moves()):
             self.b.make_move(move)
