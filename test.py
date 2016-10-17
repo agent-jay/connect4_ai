@@ -182,16 +182,21 @@ def manual_play():
 
 def time_test():
     p=player.Player()
+    p.start_time=time.time()
+    p.timeout=100
     moves=[3,3,3,3,3,3,2,4]
+    chosen_depth=9
     map(p.make_move,moves)
     start_time= time.time()
+    p.get_move_at_depth(chosen_depth)
+    print("Time taken for searching depth %d:%f"%(chosen_depth,time.time()-start_time))
+    print("Nodes expanded until depth %d:%d"%(chosen_depth,p.b.total_moves))
+    p=player.Player()
     p.get_move()
-    print("Time taken:%f"%(time.time()-start_time))
-    print("Nodes expanded:%d"%(p.b.total_moves))
-    print("Depth:%d"%p.prev_depth)
+    print("Max Depth in 3 seconds:%d"%p.prev_depth)
     b=board.Board()
     map(b.make_move, moves)
-    search.minimax(b, p.prev_depth, True)
+    # search.minimax(b, p.prev_depth, True)
     print("Minimax nodes expanded:%d"%(b.total_moves))
     
 
