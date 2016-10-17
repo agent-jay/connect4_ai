@@ -69,6 +69,9 @@ class Board:
         print(self)
         print(self.move_hist)
 
+    def hashable(self):
+        return str(self.state)
+
     def __str__(self):
         return '\n'+str(self.state).replace('], [', ']\n[')
 

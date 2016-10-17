@@ -17,8 +17,10 @@ class Player:
         self.move_pref= {0:3, 1:2, 2:1, 3:0, 4:1, 5:2, 6:3}
         self.move_pref_dict={}
         self.gen_move_pref_dict()
+        self.move_pref_dict_ab={}
         self.timeout=3
         self.prev_depth=0
+        self.depth_limit=43
         self.start_time=None
 
     def name(self):
@@ -35,6 +37,10 @@ class Player:
 
 
     def move_order(self,moves):
+        best_mv=self.move_pref_dict_ab.get(self.b.hashable())
+        if best_mv:
+            print("Hello")
+            return[best_mv]+[mv for mv in self.move_pref_dict[moves] if mv!=best_mv]
         # prefer center moves to end moves. Use when pruning
         return self.move_pref_dict[moves]
         #default
@@ -47,7 +53,7 @@ class Player:
         self.b.total_moves=0
         best_moves=[]
         depth=1
-        while(depth<43):
+        while(depth<self.depth_limit):
             best_move=self.get_move_at_depth(depth)
             if best_move==None:
                 break
@@ -55,6 +61,7 @@ class Player:
             depth+=1
         # print("MAX DEPTH:"+str(len(best_moves)))
         self.prev_depth=depth-1
+        self.move_pref_dict_ab={}
         return best_moves[-1]
         
 
@@ -68,6 +75,7 @@ class Player:
             self.b.unmake_last_move()
             if value[0]==None:
                 return
+            self.move_pref_dict_ab[self.b.hashable()]=move
             values.append(value)
         print(values)
         minimax_val,best_mv=max(values)
