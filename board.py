@@ -11,7 +11,7 @@ class Board:
 
     def generate_moves(self):
         #checks if top row of a column(ie. head>0) is empty and returns if so
-        return [i for i,val in enumerate(self.head) if val>0]
+        return tuple(i for i,val in enumerate(self.head) if val>0)
         # alt method
         # return [i for i,val in enumerate(self.state[0]) if val==0]
    

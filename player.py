@@ -1,6 +1,7 @@
 import time
 import random
 import board
+from itertools import combinations
 
 inf=1000
 
@@ -14,6 +15,8 @@ class Player:
                          [4,6,8,10,8,6,4],
                          [3,4,5,7,5,4,3]]
         self.move_pref= {0:3, 1:2, 2:1, 3:0, 4:1, 5:2, 6:3}
+        self.move_pref_dict={}
+        self.gen_move_pref_dict()
         self.timeout=3
         self.prev_depth=0
         self.start_time=None
@@ -21,15 +24,22 @@ class Player:
     def name(self):
         return 'agentjay_mk2'
 
+    def gen_move_pref_dict(self):
+        for size in range(1,8):
+            for comb in combinations(range(7),size):
+                self.move_pref_dict[comb]= sorted(comb,key=lambda x:self.move_pref[x])
+
+
     def make_move(self, move):
         self.b.make_move(move)
 
 
     def move_order(self,moves):
         # prefer center moves to end moves. Use when pruning
-        return sorted(moves,key=lambda x:self.move_pref[x])
+        return self.move_pref_dict[moves]
         #default
         # return moves
+
 
     def get_move(self):
         #Iterative deepening
