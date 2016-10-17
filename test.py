@@ -187,11 +187,13 @@ def time_test():
     moves=[3,3,3,3,3,3,2,4]
     chosen_depth=9
     map(p.make_move,moves)
+    p.depth_limit=chosen_depth+1
     start_time= time.time()
-    p.get_move_at_depth(chosen_depth)
+    p.get_move()
     print("Time taken for searching depth %d:%f"%(chosen_depth,time.time()-start_time))
     print("Nodes expanded until depth %d:%d"%(chosen_depth,p.b.total_moves))
     p=player.Player()
+    map(p.make_move,moves)
     p.get_move()
     print("Max Depth in 3 seconds:%d"%p.prev_depth)
     b=board.Board()
