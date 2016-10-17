@@ -1,6 +1,7 @@
 import board
 import player
 import player2
+import player3
 import Altplayer
 import manual
 import random_player
@@ -95,7 +96,7 @@ def test_Q3():
 
 
 def test_Q4():
-    players = [player.Player(),player2.Player()]
+    players = [player.Player(),player3.Player()]
     random.shuffle(players)
     print(players[0].name() + " vs " + players[1].name())
 
@@ -181,7 +182,7 @@ def manual_play():
         return "DRAW"
 
 def time_test():
-    p=player.Player()
+    p=player3.Player()
     p.start_time=time.time()
     p.timeout=100
     moves=[3,3,3,3,3,3,2,4]
