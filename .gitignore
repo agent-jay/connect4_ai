@@ -1,4 +1,5 @@
 *.pdf
 *.pyc
 *.log
+*.txt
 __pycache__/

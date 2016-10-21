@@ -39,7 +39,6 @@ class Player:
     def move_order(self,moves):
         best_mv=self.move_pref_dict_ab.get(self.b.hashable())
         if best_mv:
-            print("Hello")
             return[best_mv]+[mv for mv in self.move_pref_dict[moves] if mv!=best_mv]
         # prefer center moves to end moves. Use when pruning
         return self.move_pref_dict[moves]
