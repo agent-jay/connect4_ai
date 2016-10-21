@@ -1,10 +1,6 @@
 import board
 import player
-import player2
-import player3
-import Altplayer
 import manual
-import random_player
 import search
 import random
 import time
@@ -95,65 +91,6 @@ def test_Q3():
     print("passed")
 
 
-def test_Q4():
-    players = [player.Player(),player3.Player()]
-    random.shuffle(players)
-    print(players[0].name() + " vs " + players[1].name())
-
-    b = board.Board()
-    i = 0
-    legal_moves = b.generate_moves()
-    while not b.last_move_won() and len(legal_moves) > 0:
-        move = players[i].get_move()
-        print(players[i].name()+"'s turn to move. Played "+str(move))
-        players[0].make_move(move)
-        players[1].make_move(move)
-        b.make_move(move)
-        print(b)
-        i^=1
-        legal_moves = b.generate_moves()
-    if b.last_move_won():
-        winner= players[i^1].name()
-        print("VICTORY FOR PLAYER " + winner)
-        return winner
-    else:
-        print("DRAW")
-        return "DRAW"
-
-def test_Q5():
-    #for rigged games
-    players = [player.Player(),player2.Player()]
-    altplayer= Altplayer.Player()
-    print(players[0].name() + " vs " + players[1].name())
-
-    b = board.Board()
-    moves_list=[1,3,2,3,3,4,3,4,3]
-    map(b.make_move, moves_list)
-    map(players[0].make_move,moves_list) 
-    map(players[1].make_move,moves_list) 
-    map(altplayer.make_move,moves_list)
-    print(b)
-    i = 0
-    legal_moves = b.generate_moves()
-    while not b.last_move_won() and len(legal_moves) > 0:
-        move = players[i].get_move()
-        print(players[i].name()+"'s turn to move. Played "+str(move))
-        print("Altplayer would have played "+str(altplayer.get_move()))
-        players[0].make_move(move)
-        players[1].make_move(move)
-        altplayer.make_move(move)
-        b.make_move(move)
-        print(b)
-        i^=1
-        legal_moves = b.generate_moves()
-    if b.last_move_won():
-        winner= players[i^1].name()
-        print("VICTORY FOR PLAYER " + winner)
-        return winner
-    else:
-        print("DRAW")
-        return "DRAW"
-
 def manual_play():
     start= input("Who starts. Input P(layer) or M(anual):").lower()
     print(start)
@@ -182,7 +119,7 @@ def manual_play():
         return "DRAW"
 
 def time_test():
-    p=player3.Player()
+    p=player.Player()
     p.start_time=time.time()
     p.timeout=100
     moves=[3,3,3,3,3,3,2,4]
@@ -203,15 +140,5 @@ def time_test():
     print("Minimax nodes expanded:%d"%(b.total_moves))
     
 
-
-
-
-# test_Q1()
-# test_Q2()
-# test_Q3()
-# test_Q4()
-# test_Q5()
-# ret=[test_Q4() for i in range(10)]
-# print(ret)
 # manual_play()
 time_test()
