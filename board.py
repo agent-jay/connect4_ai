@@ -28,9 +28,12 @@ class Board:
 
     def generate_moves(self):
         #checks if top row of a column(ie. head>0) is empty and returns if so
-        return tuple(i for i,val in enumerate(self.head) if val>0)
-        # alt method
-        # return [i for i,val in enumerate(self.state[0]) if val==0]
+        key=0
+        for i,val in enumerate(self.head):
+            if val>0:
+                key+= 2**(6-i)
+        return key
+                
    
     def is_full(self):
         if sum(self.head)==0:
@@ -69,17 +72,18 @@ class Board:
         if len(self.move_hist)==0:
             return False
         last_y,last_x=self.move_hist[-1]
+        last_player=self.last_player
 
         #horiz
-        if self.scan(last_x-1,last_y,-1,0,self.last_player) + self.scan(last_x+1,last_y,1,0,self.last_player)>=3:
+        if self.scan(last_x-1,last_y,-1,0,last_player) + self.scan(last_x+1,last_y,1,0,last_player)>=3:
             return True
         #vertical
-        if self.scan(last_x,last_y-1,0,-1,self.last_player) + self.scan(last_x,last_y+1,0,1,self.last_player)>=3:
+        if self.scan(last_x,last_y-1,0,-1,last_player) + self.scan(last_x,last_y+1,0,1,last_player)>=3:
             return True
         #diagonal
-        if self.scan(last_x-1,last_y-1,-1,-1,self.last_player) + self.scan(last_x+1,last_y+1,1,1,self.last_player)>=3:
+        if self.scan(last_x-1,last_y-1,-1,-1,last_player) + self.scan(last_x+1,last_y+1,1,1,last_player)>=3:
             return True
-        if self.scan(last_x-1,last_y+1,-1,1,self.last_player) + self.scan(last_x+1,last_y-1,1,-1,self.last_player)>=3:
+        if self.scan(last_x-1,last_y+1,-1,1,last_player) + self.scan(last_x+1,last_y-1,1,-1,last_player)>=3:
             return True
         return False
 

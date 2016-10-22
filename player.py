@@ -29,8 +29,10 @@ class Player:
     def gen_move_pref_dict(self):
         for size in range(1,8):
             for comb in combinations(range(7),size):
-                self.move_pref_dict[comb]= sorted(comb,key=lambda x:self.move_pref[x])
-
+                j=0
+                for i in comb:
+                    j^=2**(6-i)
+                self.move_pref_dict[j]= sorted(comb,key=lambda x:self.move_pref[x])
 
     def make_move(self, move):
         self.b.make_move(move)
@@ -66,7 +68,7 @@ class Player:
 
     def get_move_at_depth(self,depth):
         values=[]
-        for move in self.b.generate_moves():
+        for move in self.move_order(self.b.generate_moves()):
             self.b.make_move(move)
             value=(self.alpha_beta_minimax(depth-1,-inf,
                 inf,maxplayer=False), move)
