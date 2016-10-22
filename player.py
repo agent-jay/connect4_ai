@@ -68,7 +68,7 @@ class Player:
 
     def get_move_at_depth(self,depth):
         values=[]
-        for move in self.move_order(self.b.generate_moves()):
+        for move in self.move_order(self.b.gen_hashmove()):
             self.b.make_move(move)
             value=(self.alpha_beta_minimax(depth-1,-inf,
                 inf,maxplayer=False), move)
@@ -87,51 +87,38 @@ class Player:
         return best_mv
 
     def evaluation(self,maxplayer):
+        return 0
+        i=len(self.b.move_hist)-1
+        evalsum=0
+        while(i>=0):
+            y,x=self.b.move_hist[i]
+            if self.b.state[y][x]==1:
+                evalsum+= self.eval_table[y][x]
+            else:
+                evalsum-= self.eval_table[y][x]
+            i-=1
+        return evalsum
+
         y,x=self.b.move_hist[-1]
         if maxplayer: 
             return -self.eval_table[y][x]
         else:
             return +self.eval_table[y][x]
 
-    def minimax(self,depth, maxplayer):
-        if self.b.last_move_won():
-            if maxplayer:
-                return -100
-            else :
-                return +100
-        
-        if depth==0 or self.b.is_full():
-            return self.evaluation(maxplayer)           
-            #Default evaluation is 0
-            # return 0 
-
-        values=[]
-        for move in self.b.generate_moves():
-            self.b.make_move(move)
-            values.append(self.minimax(depth-1, not maxplayer))
-            self.b.unmake_last_move()
-        #If maximizing player
-        if maxplayer:
-            return max(values)
-        #if minimizing player
-        else:
-            return min(values)
-
-
     def alpha_beta_minimax(self,depth, alpha, beta, maxplayer):
         if time.time()-self.start_time>= self.timeout:
             return None
         if self.b.last_move_won():
             if maxplayer:
-                return -100
+                return -200
             else :
-                return +100
+                return +200
         if depth==0: 
             return self.evaluation(maxplayer) #evaluation of board
         if self.b.is_full():
             return 0
         
-        for move in self.move_order(self.b.generate_moves()):
+        for move in self.move_order(self.b.gen_hashmove()):
             self.b.make_move(move)
             v= self.alpha_beta_minimax(depth-1, alpha,beta, not maxplayer) 
             self.b.unmake_last_move()

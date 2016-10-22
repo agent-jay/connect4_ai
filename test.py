@@ -139,6 +139,8 @@ def time_test():
     # search.minimax(b, p.prev_depth, True)
     print("Minimax nodes expanded:%d"%(b.total_moves))
     
-
-# manual_play()
-time_test()
+# test_Q1()
+# test_Q2()
+# test_Q3()
+manual_play()
+# time_test()

@@ -27,6 +27,9 @@ class Board:
         return len(self.move_hist)
 
     def generate_moves(self):
+        return [i for i,val in enumerate(self.head) if val>0]
+
+    def gen_hashmove(self):
         #checks if top row of a column(ie. head>0) is empty and returns if so
         key=0
         for i,val in enumerate(self.head):
