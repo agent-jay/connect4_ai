@@ -31,7 +31,7 @@ class Player:
             for comb in combinations(range(7),size):
                 j=0
                 for i in comb:
-                    j^=2**(6-i)
+                    j+=2**(6-i)
                 self.move_pref_dict[j]= sorted(comb,key=lambda x:self.move_pref[x])
 
     def make_move(self, move):
@@ -62,13 +62,14 @@ class Player:
             depth+=1
         # print("MAX DEPTH:"+str(len(best_moves)))
         self.prev_depth=depth-1
+        print(self.prev_depth)
         self.move_pref_dict_ab={}
         return best_moves[-1]
         
 
     def get_move_at_depth(self,depth):
         values=[]
-        for move in self.move_order(self.b.gen_hashmove()):
+        for move in self.b.generate_moves():
             self.b.make_move(move)
             value=(self.alpha_beta_minimax(depth-1,-inf,
                 inf,maxplayer=False), move)
@@ -110,15 +111,24 @@ class Player:
             return None
         if self.b.last_move_won():
             if maxplayer:
-                return -200
+                return -300
             else :
-                return +200
+                return +300
         if depth==0: 
             return self.evaluation(maxplayer) #evaluation of board
         if self.b.is_full():
             return 0
         
-        for move in self.move_order(self.b.gen_hashmove()):
+        # for move in self.move_order(self.b.gen_hashmove()):
+        a=self.b.generate_moves()
+        b=self.b.gen_hashmove()
+        c=sorted(self.move_pref_dict[b])
+        if a !=c:
+            print("ERROR")
+            print(a,b,c )
+            quit(1)
+
+        for move in self.b.generate_moves():
             self.b.make_move(move)
             v= self.alpha_beta_minimax(depth-1, alpha,beta, not maxplayer) 
             self.b.unmake_last_move()
