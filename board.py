@@ -1,5 +1,8 @@
 from random import randint,seed
 
+#largest num represented by 64bit int. Ensures zobrist key collisions don't happen
+int_64_max=18446744073709551615 
+
 class Board:
     def __init__(self):
         self.state= [[0 for x in range(7)] for y in range(6)]
@@ -18,7 +21,7 @@ class Board:
         for player in range(2):
             for y in range(6):
                 for x in range(7):
-                    self.zobrist[player][y][x]=randint(0,1000)
+                    self.zobrist[player][y][x]=randint(0,int_64_max)
         #Is it needed? One more element that represents side. Two positions can be identical
         #with the only difference being which side is playing
         # self.zobrist.append(randint(0,1000)) 

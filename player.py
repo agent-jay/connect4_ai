@@ -1,6 +1,7 @@
 import time
 import random
-import board
+# import board
+from . import board #Change this everytime
 from itertools import combinations
 
 inf=1000
@@ -8,6 +9,7 @@ inf=1000
 class Player:
     def __init__(self):
         self.b=board.Board()
+        self.coin= 2 #It's the coin this player uses on the board
         self.eval_table=[[3,4,5,7,5,4,3],
                          [4,6,8,10,8,6,4],
                          [5,8,11,13,11,8,5],
@@ -24,7 +26,7 @@ class Player:
         self.start_time=None
 
     def name(self):
-        return 'agentjay_mk2'
+        return 'agentjay_mk3'
 
     def gen_move_pref_dict(self):
         for size in range(1,8):
@@ -38,19 +40,20 @@ class Player:
         self.b.make_move(move)
 
 
-    def move_order(self,moves):
+    def move_order(self):
+        move_cd=self.b.gen_hashmove()
+        moves= self.move_pref_dict[move_cd]
         best_mv=self.move_pref_dict_ab.get(self.b.hashable())
         if best_mv:
-            return[best_mv]+[mv for mv in self.move_pref_dict[moves] if mv!=best_mv]
-        # prefer center moves to end moves. Use when pruning
-        return self.move_pref_dict[moves]
-        #default
-        # return moves
+            return[best_mv]+[mv for mv in moves if mv!=best_mv]
+        return moves
 
 
     def get_move(self):
         #Iterative deepening
         self.start_time=time.time()
+        if len(self.b.move_hist)==0:
+            self.coin=1
         self.b.total_moves=0
         best_moves=[]
         depth=1
@@ -88,12 +91,12 @@ class Player:
         return best_mv
 
     def evaluation(self,maxplayer):
-        return 0
+        # return 0
         i=len(self.b.move_hist)-1
         evalsum=0
         while(i>=0):
             y,x=self.b.move_hist[i]
-            if self.b.state[y][x]==1:
+            if self.b.state[y][x]==self.coin:
                 evalsum+= self.eval_table[y][x]
             else:
                 evalsum-= self.eval_table[y][x]
@@ -120,15 +123,16 @@ class Player:
             return 0
         
         # for move in self.move_order(self.b.gen_hashmove()):
-        a=self.b.generate_moves()
-        b=self.b.gen_hashmove()
-        c=sorted(self.move_pref_dict[b])
-        if a !=c:
-            print("ERROR")
-            print(a,b,c )
-            quit(1)
+        # a=self.b.generate_moves()
+        # b=sorted(self.move_order())
+        # c=self.b.gen_hashmove() 
+        # if a !=b:
+            # print("ERROR")
+            # print(a,b,c)
+            # quit(1)
 
-        for move in self.b.generate_moves():
+        # for move in self.b.generate_moves():
+        for move in self.move_order():
             self.b.make_move(move)
             v= self.alpha_beta_minimax(depth-1, alpha,beta, not maxplayer) 
             self.b.unmake_last_move()
