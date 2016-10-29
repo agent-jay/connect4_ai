@@ -1,0 +1,26 @@
+
+Date:28 Oct 2016
+Removed a major yet minor thorn that's been stuck in my foot for the past week
+and a half. The zobrist hashing key ranges were too small (originally
+initialized to random values bet 1-1000). Increased this to the value the max
+integer value 64 bits can produce.
+Also a new evaluation- sum over piece values. A little expensive, but correct.
+The previous evaluation used only the last move (incorrect)
+Tests have to be introduced in some form, lots of cases needed. Not sure how to
+do that but it is totally neccessary to test every change made to a working
+piece of code. This zobrist thing took ages to narrow down since I added a
+bunch of changes on top of it without testing correctness
+Exclusively running on the final test environment(Python3) now.
+Depth9- 1.8-2.5 seconds, 128161 nodes expanded
+Profiling showed the following:
+2.5= (apart from alpha beta) +
+0.8(lastmovewon)+.412(scan)+.344(eval)+.291(moveord)+.25+.25(make and unmake)
+Improved move ordering and algorithmic improvements are what will help with
+order of magnitude reduction in nodes expanded. 
+But possible ideas for code improvements- if the O(1) last move won is
+implemented(incremental), that can be used for evaluation and possibly for move
+ordering(?). 3 birds with 1 stone.
+Also, consider using data structures that avoid dynamic typing, think Numpy,
+Cython, bitstring, etc.
+These notes are to keep a record of my travails, ideas, next steps, bugs and
+changes etc.
