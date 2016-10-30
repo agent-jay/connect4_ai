@@ -35,7 +35,7 @@ class Board:
         self.bitboards[player_index]^= move
         
         self.zobrist_key^=self.zobrist[player_index][self.head[col]]
-        self.eval_sum[player_index]+= PLAYER_SIGN[player_index]*self.eval_table[self.head[col]]
+        # self.eval_sum[player_index]+= PLAYER_SIGN[player_index]*self.eval_table[self.head[col]]
 
         self.head[col]+=1
         self.move_hist.append(col)
@@ -54,7 +54,7 @@ class Board:
         self.bitboards[player_index]^=move
         
         self.zobrist_key^=self.zobrist[player_index][self.head[col]]
-        self.eval_sum[player_index]-= PLAYER_SIGN[player_index]*self.eval_table[self.head[col]]
+        # self.eval_sum[player_index]-= PLAYER_SIGN[player_index]*self.eval_table[self.head[col]]
 
         self.last_player= -self.last_player+3
     

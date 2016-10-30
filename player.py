@@ -43,7 +43,7 @@ class Player:
     def move_order(self):
         move_cd=self.b.gen_hashmove()
         moves= self.move_pref_dict[move_cd]
-        best_mv=self.move_pref_dict_ab.get(self.b.hashable())
+        best_mv=self.move_pref_dict_ab.get(self.b.zobrist_key)
         if best_mv:
             return[best_mv]+[mv for mv in moves if mv!=best_mv]
         return moves
@@ -92,6 +92,7 @@ class Player:
         return best_mv
 
     def evaluation(self):
+        return 0
         return board.PLAYER_SIGN[self.coin]*sum(self.b.eval_sum)
         i=len(self.b.move_hist)-1
         evalsum=0
@@ -132,6 +133,7 @@ class Player:
             # quit(1)
 
         # for move in self.b.generate_moves():
+        best_mv=None
         for move in self.move_order():
             self.b.make_move(move)
             v= self.alpha_beta_minimax(depth-1, alpha,beta, not maxplayer) 
@@ -139,15 +141,21 @@ class Player:
             if v==None:
                 return None
             if maxplayer and v>=beta:
+                self.move_pref_dict_ab[self.b.zobrist_key]=move
                 return beta
             if maxplayer and v>alpha:
                 alpha=v
+                best_mv=move
             if (not maxplayer) and v<=alpha:
+                self.move_pref_dict_ab[self.b.zobrist_key]=move
                 return alpha
             if (not maxplayer) and v<beta:
                 beta=v
+                best_mv=move
         if maxplayer:
+            self.move_pref_dict_ab[self.b.zobrist_key]=best_mv
             return alpha
         else:
+            self.move_pref_dict_ab[self.b.zobrist_key]=best_mv
             return beta
 
