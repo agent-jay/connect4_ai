@@ -20,6 +20,7 @@ class Player:
         self.move_pref_dict={}
         self.gen_move_pref_dict()
         self.move_pref_dict_ab={}
+        self.killer={}
         self.timeout=3
         self.prev_depth=0
         self.depth_limit=43
@@ -35,16 +36,20 @@ class Player:
                 for i in comb:
                     j+=2**(6-i)
                 self.move_pref_dict[j]= sorted(comb,key=lambda x:self.move_pref[x])
+                print(self.move_pref_dict)
 
     def make_move(self, move):
         self.b.make_move(move)
 
 
-    def move_order(self):
+    def move_order(self,depth):
         move_cd=self.b.gen_hashmove()
         moves= self.move_pref_dict[move_cd]
         best_mv=self.move_pref_dict_ab.get(self.b.zobrist_key)
-        if best_mv:
+        killer_mv=self.killer.get(depth)
+        if killer_mv: 
+            return[killer_mv]+[mv for mv in moves if mv!=killer_mv]
+        if best_mv: 
             return[best_mv]+[mv for mv in moves if mv!=best_mv]
         return moves
 
@@ -67,6 +72,7 @@ class Player:
         self.prev_depth=depth-1
         print(self.prev_depth)
         self.move_pref_dict_ab={}
+        self.killer={}
         return best_moves[-1]
         
 
@@ -134,7 +140,7 @@ class Player:
 
         # for move in self.b.generate_moves():
         best_mv=None
-        for move in self.move_order():
+        for move in self.move_order(depth):
             self.b.make_move(move)
             v= self.alpha_beta_minimax(depth-1, alpha,beta, not maxplayer) 
             self.b.unmake_last_move()
@@ -142,6 +148,7 @@ class Player:
                 return None
             if maxplayer and v>=beta:
                 self.move_pref_dict_ab[self.b.zobrist_key]=move
+                self.killer[depth]=move
                 return beta
             if maxplayer and v>alpha:
                 alpha=v
