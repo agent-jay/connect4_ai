@@ -1,3 +1,13 @@
+Date:29 Oct 2016
+Sat all day trying to get bitboards and evaluation to work. Fell into the pit
+of over-optimization and getting my head around bitwise arithmetic. 
+Finding out a lot of python3 nuances- map returns another iterator. needs to be
+list()-ed to actually evaluate and return a list like Python2.
+Calculating this sum evaluation takes ages
+Going to focus on algorithmic improvements from now.
+Add more stats- average branching factor, how many alpha,beta,exact nodes, how
+many nodes, at beta node how many moves did you search before pruning.
+Finally have a handle on alpha beta! Got the hash move to work
 
 Date:28 Oct 2016
 Removed a major yet minor thorn that's been stuck in my foot for the past week
