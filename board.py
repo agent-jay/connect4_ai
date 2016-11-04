@@ -5,6 +5,9 @@ INT_64_MAX=int('1'*64,2)
 TOP= int(('1000000'*7).zfill(64), 2)
 TOP_INT=[6,13,20,27,34,41,48]
 PLAYER_SIGN=[1,-1]
+EVAL_TABLE= [3,4,5,5,4,3,0,4,6,8,8,6,4,0,5,8,11,11,8,5,0,7,10,
+                13,13,10,7,0,5,8,11,11,8,5,0,4,6,8,8,6,4,0,3,4,5,5,4,3,0,
+                0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
 
 class Board:
     def __init__(self):
@@ -19,9 +22,6 @@ class Board:
         self.zobrist_key=0
         self.zobrist_init()
         self.eval_sum=[0,0]
-        self.eval_table=[3,4,5,5,4,3,0,4,6,8,8,6,4,0,5,8,11,11,8,5,0,7,10,
-                13,13,10,7,0,5,8,11,11,8,5,0,4,6,8,8,6,4,0,3,4,5,5,4,3,0,
-                0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
 
     def zobrist_init(self):
         seed(self.rand_seed)
@@ -35,7 +35,7 @@ class Board:
         self.bitboards[player_index]^= move
         
         self.zobrist_key^=self.zobrist[player_index][self.head[col]]
-        # self.eval_sum[player_index]+= PLAYER_SIGN[player_index]*self.eval_table[self.head[col]]
+        self.eval_sum[player_index]+= PLAYER_SIGN[player_index]*EVAL_TABLE[self.head[col]]
 
         self.head[col]+=1
         self.move_hist.append(col)
@@ -54,7 +54,7 @@ class Board:
         self.bitboards[player_index]^=move
         
         self.zobrist_key^=self.zobrist[player_index][self.head[col]]
-        # self.eval_sum[player_index]-= PLAYER_SIGN[player_index]*self.eval_table[self.head[col]]
+        self.eval_sum[player_index]-= PLAYER_SIGN[player_index]*EVAL_TABLE[self.head[col]]
 
         self.last_player= -self.last_player+3
     
