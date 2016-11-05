@@ -40,7 +40,7 @@ class Board:
         self.head[col]+=1
         self.move_hist.append(col)
         self.counter+=1
-        self.last_player=-self.last_player+3
+        self.last_player^=3
         self.total_moves+=1
         
     def unmake_last_move(self):
@@ -56,7 +56,7 @@ class Board:
         self.zobrist_key^=self.zobrist[player_index][self.head[col]]
         self.eval_sum[player_index]-= PLAYER_SIGN[player_index]*EVAL_TABLE[self.head[col]]
 
-        self.last_player= -self.last_player+3
+        self.last_player^=3
     
     def generate_moves(self):
         #checks if top row of a column(ie. head>0) is empty and returns if so
