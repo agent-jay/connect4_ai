@@ -1,9 +1,9 @@
-#connect4_ai
+# Connect4 AI
 
 Bot that won second place in the Connect 4 competition, as part of the Fall '16
 Elements of AI class
 
-##Code structure
+## Code structure
 
 - board.py - Board representation using bitboards
 - player.py - Alpha-beta Minimax search
